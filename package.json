@@ -17,10 +17,13 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "jest": "23.6.0",
+    "pg": "7.7.1",
     "supertest": "3.3.0"
   },
   "dependencies": {
     "body-parser": "1.18.3",
-    "express": "4.16.4"
+    "express": "4.16.4",
+    "knex": "0.15.2",
+    "consign": "0.1.6"
   }
 }
