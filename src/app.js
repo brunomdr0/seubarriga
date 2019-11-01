@@ -8,12 +8,21 @@ app.db = knex(knexfile.test);
 
 consign({ cwd: 'src' })
   .include('./config/middlewares.js')
-  .then('/routes')
-  .then('/config/routes.js')
+  .then('./services')
+  .then('./routes')
+  .then('./config/routes.js')
   .into(app);
 
 app.get('/', (req, res) => { // Essa função habilita a rota /, e quem acessa-la receberá um status 200
   res.status(200).send();
 });
+
+/* app.db.on('query', (query) => {
+  console.log({sql: query.sql, bindings: query.bindings ? query.bindings.join(',') : ''});
+
+})
+  .on('query-response', (response) => console.log(response))
+  .on('error', error => console.log(error)); */ 
+
 
 module.exports = app;
