@@ -7,10 +7,11 @@ const knexfile = require('../knexfile');
 app.db = knex(knexfile.test);
 
 consign({ cwd: 'src', verbose: false })
-  .include('./config/middlewares.js')
+  .include('./config/passport.js')
+  .then('./config/middlewares.js')
   .then('./services')
   .then('./routes')
-  .then('./config/routes.js')
+  .then('./config/router.js')
   .into(app);
 
 app.get('/', (req, res) => { // Essa função habilita a rota /, e quem acessa-la receberá um status 200
