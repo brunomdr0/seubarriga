@@ -22,6 +22,8 @@ app.use((err, req, res, next) => {
   const { name, message, stack } = err;
   if (name === 'ValidationError') {
     res.status(400).json({ error: message });
+  } else if (name === 'RecursoIndevidoError') {
+    res.status(403).json({ error: message });
   } else {
     res.status(500).json({ name, message, stack });
   }
@@ -34,6 +36,5 @@ app.use((err, req, res, next) => {
 })
   .on('query-response', (response) => console.log(response))
   .on('error', error => console.log(error)); */
-
 
 module.exports = app;
