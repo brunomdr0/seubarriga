@@ -1,6 +1,6 @@
 const express = require('express');
 
-module.exports = (app) => { 
+module.exports = (app) => {
   app.use('/auth', app.routes.auth);
   const protectedRouter = express.Router();
 

@@ -118,7 +118,7 @@ test('Não deve alterar uma conta de outro usuário', () => {
     });
 });
 
-test.skip('Deve remover uma conta', () => {
+test('Deve remover uma conta', () => {
   return app.db('accounts')
     .insert({ name: 'Acc to remove', user_id: user.id }, ['id'])
     .then((acc) => request(app)

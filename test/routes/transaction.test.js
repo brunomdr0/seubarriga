@@ -159,6 +159,17 @@ test('Não deve alterar uma transação de outro usuário', () => {
     }));
 });
 
+test.skip('Não deve remover uma conta com transação', () => {
+  return app.db('transactions').insert(
+    { description: 'To be denied', date: new Date(), ammount: 700, type: 'I', acc_id: accUser.id }, ['id']
+  ).then(() => request(app).delete(`/v1/accounts/${accUser.id}`)
+    .set('authorization', `bearer ${user.token}`)
+    .then(res => {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Essa conta possui transações associadas');
+    }));
+});
+
 test('Não deve retornar a transação por ID de outro usuário', () => {
   return app.db('transactions').insert(
     { description: 'T ID', date: new Date(), ammount: 100, type: 'I', acc_id: accUser2.id }, ['id']
@@ -167,16 +178,5 @@ test('Não deve retornar a transação por ID de outro usuário', () => {
     .then(res => {
       expect(res.status).toBe(403);
       expect(res.body.error).toBe('Este recurso não pertence ao usuário');
-    }));
-});
-
-test('Não deve remover uma conta com transação', () => {
-  return app.db('transactions').insert(
-    { description: 'To be denied', date: new Date(), ammount: 700, type: 'I', acc_id: accUser.id }, ['id']
-  ).then(() => request(app).delete(`/v1/accounts/${accUser.id}`)
-    .set('authorization', `bearer ${user.token}`)
-    .then(res => {
-      expect(res.status).toBe(400);
-      expect(res.body.error).toBe('Essa conta possui transações associadas');
     }));
 });
