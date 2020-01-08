@@ -40,7 +40,6 @@ module.exports = (app) => {
   });
 
   router.delete('/:id', (req, res) => {
-    console.log(req.params.id);
     app.services.account.remove(req.params.id)
       .then(() => res.status(204).send());
   });

@@ -11,7 +11,8 @@ module.exports = (app) => {
       .where(filter)
       .first();
   };
-  const save = async (transfer) => {
+
+  const validate = async (transfer) => {
     if (!transfer.description) throw new ValidationError('Description é atributo obrigatório!');
     if (!transfer.date) throw new ValidationError('Data é atributo obrigatório!');
     if (!transfer.ammount) throw new ValidationError('Valor é atributo obrigatório!');
@@ -23,17 +24,40 @@ module.exports = (app) => {
     accounts.forEach((acc) => {
       if (acc.user_id !== parseInt(transfer.user_id, 10)) throw new ValidationError('Conta não pertence ao usuário!')
     });
+  };
 
+  const save = async (transfer) => {
     const result = await app.db('transfers').insert(transfer, '*');
     const transferId = result[0].id;
 
     const transactions = [
-      { description: `Transfer to acc #${transfer.acc_dest_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O', acc_id: transfer.acc_ori_id, transfer_id: transferId },
-      { description: `Transfer to acc #${transfer.acc_ori_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I', acc_id: transfer.acc_dest_id, transfer_id: transferId },
+      { description: `Transfer to acc #${transfer.acc_dest_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O', acc_id: transfer.acc_ori_id, transfer_id: transferId, status: true },
+      { description: `Transfer to acc #${transfer.acc_ori_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I', acc_id: transfer.acc_dest_id, transfer_id: transferId, status: true },
     ];
 
     await app.db('transactions').insert(transactions);
     return result;
   };
-  return { find, save, findOne };
+
+  const update = async (id, transfer) => {
+    const result = await app.db('transfers')
+      .where({ id })
+      .update(transfer, '*');
+
+    const transactions = [
+      { description: `Transfer to acc #${transfer.acc_dest_id}`, date: transfer.date, ammount: transfer.ammount * -1, type: 'O', acc_id: transfer.acc_ori_id, transfer_id: id, status: true },
+      { description: `Transfer to acc #${transfer.acc_ori_id}`, date: transfer.date, ammount: transfer.ammount, type: 'I', acc_id: transfer.acc_dest_id, transfer_id: id, status: true },
+    ];
+
+    await app.db('transactions').where({ transfer_id: id }).del();
+    await app.db('transactions').insert(transactions);
+    return result;
+  };
+
+  const remove = async (id) => {
+    await app.db('transactions').where({ transfer_id: id }).del();
+    return app.db('transfers').where({ id }).del();
+  };
+
+  return { find, save, findOne, update, validate, remove };
 };

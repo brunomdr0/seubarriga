@@ -9,10 +9,15 @@ module.exports = (app) => {
       .select();
   };
 
-  const findOne = (filter) => {
+  /* const findOne = (filter) => {
     return app.db('transactions')
       .where(filter)
       .first();
+  }; */
+
+  const findOne = async (filter) => {
+    const result = await app.db('transactions').where(filter).first();
+    return result;
   };
 
   const update = (id, transaction) => {

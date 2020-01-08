@@ -13,6 +13,7 @@ beforeAll(async () => {
   // Estratégia para realizar os testes de transação
   // #1 limpar as tabelas do banco.
   await app.db('transactions').del();
+  await app.db('transfers').del();
   await app.db('accounts').del();
   await app.db('users').del();
   // #2 limpar as tabelas do banco.
@@ -59,7 +60,7 @@ test('Deve inserir uma transação com sucesso', () => {
     });
 });
 
-/* describe('Não deve realizar transação com dados inválidos', () => {
+describe('Não deve realizar transação com dados inválidos', () => {
   let validTransaction;
   beforeAll(() => {
     validTransaction = { description: 'New T', date: new Date(), ammount: 100, type: 'I', acc_id: accUser.id }
@@ -78,7 +79,7 @@ test('Deve inserir uma transação com sucesso', () => {
   test('Não deve inserir sem ammount', () => testTemplate({ ammount: null }, 'Ammount é um atributo obrigatório!'));
   test('Não deve inserir sem type', () => testTemplate({ type: null }, 'Type é um atributo obrigatório!'));
   test('Não deve inserir sem acc_id', () => testTemplate({ acc_id: null }, 'acc_id é um atributo obrigatório!'));
-}); */
+});
 
 test('Transações de entrada devem ser positivas', () => {
   return request(app).post(MAIN_ROUTE)
